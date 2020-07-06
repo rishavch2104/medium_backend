@@ -6,6 +6,7 @@ const keyStoreSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     required: true,
+    unique: true,
     ref: "Users",
   },
   accessTokenKey: {

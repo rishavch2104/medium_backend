@@ -12,7 +12,7 @@ module.exports = {
   addUser: async (user, accessTokenKey, refreshTokenKey) => {
     const newUser = await Users.create(user);
 
-    const keys = await keyStoreService.createKey(
+    await keyStoreService.createKey(
       newUser._id,
       accessTokenKey,
       refreshTokenKey

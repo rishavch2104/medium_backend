@@ -31,10 +31,17 @@ class InvalidTokenError extends APIError {
   }
 }
 
+class ValidationError extends APIError {
+  constructor(message, statusCode = "404") {
+    super(message, statusCode);
+  }
+}
+
 module.exports = {
   APIError,
   NotFoundError,
   AlreadyExistsError,
   IncorrectPasswordError,
   InvalidTokenError,
+  ValidationError,
 };

@@ -4,6 +4,7 @@ const userService = require("./../database/services/userService");
 const keyStoreService = require("./../database/services/keyStoreService");
 const generateTokens = require("./../auth/utils/generateToken");
 const JWT = require("./../auth/utils/JWT");
+
 const {
   NotFoundError,
   AlreadyExistsError,
@@ -47,10 +48,12 @@ module.exports = {
       return next(new NotFoundError());
     }
 
-    const match = bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password);
+    console.log(match);
     if (!match) return next(new IncorrectPasswordError());
 
     const { accessTokenKey, refreshTokenKey } = generateKeys();
+    await keyStoreService.createKey(user._id, accessTokenKey, refreshTokenKey);
     const tokens = await generateTokens(user, accessTokenKey, refreshTokenKey);
     return res.status(200).json(tokens);
   },
