@@ -3,15 +3,15 @@ const iat = Math.floor(Date.now() / 1000);
 
 module.exports = async (user, accessTokenKey, refreshTokenKey) => {
   const accessToken = await JWT.encode({
-    iss: tokenInfo.tokenIssuer,
-    aud: tokenInfo.tokenAudience,
+    iss: process.env.tokenIssuer,
+    aud: process.env.tokenAudience,
     sub: user._id.toString(),
     iat: iat,
     param: accessTokenKey,
-    exp: iat + tokenInfo.accessTokenValidity * 24 * 60 * 60,
+    exp: parseInt(iat + process.env.accessTokenValidity * 24 * 60 * 60),
   });
 
-  if (!accessToken) throw new Error("invalid access key data");
+  if (!accessToken) throw new InternalError();
 
   const refreshToken = await JWT.encode({
     iss: tokenInfo.tokenIssuer,
@@ -22,14 +22,7 @@ module.exports = async (user, accessTokenKey, refreshTokenKey) => {
     exp: iat + tokenInfo.refreshTokenValidity * 24 * 60 * 60,
   });
 
-  if (!refreshToken) throw new Error("invalid refresh token data");
+  if (!refreshToken) throw new InternalError();
 
   return { accessToken, refreshToken };
-};
-
-const tokenInfo = {
-  accessTokenValidity: parseInt(30),
-  refreshTokenValidity: parseInt(120),
-  tokenIssuer: "Rishavchaudhary",
-  tokenAudience: "Rishavchaudhary",
 };

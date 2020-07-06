@@ -36,6 +36,11 @@ class ValidationError extends APIError {
     super(message, statusCode);
   }
 }
+class InternalError extends APIError {
+  constructor(message = "Internal Server Error", statusCode = "404") {
+    super(message, statusCode);
+  }
+}
 
 module.exports = {
   APIError,
@@ -44,4 +49,5 @@ module.exports = {
   IncorrectPasswordError,
   InvalidTokenError,
   ValidationError,
+  InternalError,
 };
