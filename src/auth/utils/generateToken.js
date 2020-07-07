@@ -14,12 +14,12 @@ module.exports = async (user, accessTokenKey, refreshTokenKey) => {
   if (!accessToken) throw new InternalError();
 
   const refreshToken = await JWT.encode({
-    iss: tokenInfo.tokenIssuer,
-    aud: tokenInfo.tokenAudience,
+    iss: process.env.tokenIssuer,
+    aud: process.env.tokenAudience,
     sub: user._id.toString(),
     iat: iat,
     param: refreshTokenKey,
-    exp: iat + tokenInfo.refreshTokenValidity * 24 * 60 * 60,
+    exp: parseInt(iat + process.env.refreshTokenValidity * 24 * 60 * 60),
   });
 
   if (!refreshToken) throw new InternalError();

@@ -9,14 +9,14 @@ class APIError extends Error {
 }
 
 class NotFoundError extends APIError {
-  constructor(message = "Resource Not Found", statusCode = "404") {
-    super(message, statusCode);
+  constructor(message = "Resource ", statusCode = "404") {
+    super(`${message} not found`, statusCode);
   }
 }
 
 class AlreadyExistsError extends APIError {
-  constructor(message = "Resource Already Exists", statusCode = "400") {
-    super(message, statusCode);
+  constructor(message = "Resource ", statusCode = "400") {
+    super(`${message} already exists`, statusCode);
   }
 }
 class IncorrectPasswordError extends APIError {
@@ -41,6 +41,16 @@ class InternalError extends APIError {
     super(message, statusCode);
   }
 }
+class AlreadyLoggedInError extends APIError {
+  constructor(message = "Already logged in", statusCode = "404") {
+    super(message, statusCode);
+  }
+}
+class TokenExpiredError extends APIError {
+  constructor(message = "Token Expired", statusCode = "404") {
+    super(message, statusCode);
+  }
+}
 
 module.exports = {
   APIError,
@@ -50,4 +60,6 @@ module.exports = {
   InvalidTokenError,
   ValidationError,
   InternalError,
+  AlreadyLoggedInError,
+  TokenExpiredError,
 };
