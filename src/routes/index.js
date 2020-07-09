@@ -12,7 +12,4 @@ router.use("/signup", signUp);
 router.use("/login", login);
 router.use("/logout", logout);
 
-router.all("*", (req, res, next) => {
-  next(new NotFoundError());
-});
 module.exports = router;

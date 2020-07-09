@@ -13,4 +13,8 @@ app.use("/", router);
 
 app.use(globalErrorHandler);
 
+app.all("*", (req, res, next) => {
+  next(new NotFoundError());
+});
+
 module.exports = app;
