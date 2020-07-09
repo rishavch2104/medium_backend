@@ -58,14 +58,17 @@ module.exports = {
 
     const { accessTokenKey, refreshTokenKey } = generateKeys();
 
-    const keyStore = await keyStoreService.findKeyByParams(user._id);
+    const keyStore = await keyStoreService.findKeyByParams({ user: user._id });
+    console.log(keyStore);
     if (keyStore) return next(new AlreadyLoggedInError());
 
     await keyStoreService.createKey(user._id, accessTokenKey, refreshTokenKey);
     const tokens = await generateTokens(user, accessTokenKey, refreshTokenKey);
     return new SuccessResponse("Logged in successfully", tokens).send(res);
   },
+
   logoutUser: async (req, res, next) => {
+    console.log(req.keystore);
     await keyStoreService.deleteKeyById(req.keystore._id);
     return new SuccessResponse("Logged Out successfully").send(res);
   },
