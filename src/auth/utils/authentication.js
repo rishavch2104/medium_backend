@@ -1,6 +1,6 @@
 const express = require("express");
 const schema = require("./authSchema");
-const { validator } = require("./../../helpers/validator");
+const validator = require("./../../helpers/validator");
 const asyncHandler = require("./../../helpers/asyncHandler");
 const userService = require("./../../database/services/userService");
 const keystoreService = require("./../../database/services/keyStoreService");

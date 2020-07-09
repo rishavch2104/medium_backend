@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-const router = require("./routes");
+const userRouter = require("./routes/user/userRoutes");
 
 const globalErrorHandler = require("./errorHandling/globalErrorHandler");
 const app = express();
@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 app.use(express.json());
-app.use("/", router);
+app.use("/user", userRouter);
 
 app.use(globalErrorHandler);
 
