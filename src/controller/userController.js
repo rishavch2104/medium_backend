@@ -4,12 +4,13 @@ const userService = require("./../database/services/userService");
 const keyStoreService = require("./../database/services/keyStoreService");
 const generateTokens = require("./../auth/utils/generateToken");
 const JWT = require("./../auth/utils/JWT");
-
+const { SuccessResponse } = require("./../helpers/apiResponse");
 const {
   NotFoundError,
   AlreadyExistsError,
   IncorrectPasswordError,
   InvalidTokenError,
+  AlreadyLoggedInError,
 } = require("./../errorHandling/apiError");
 
 module.exports = {
@@ -37,7 +38,10 @@ module.exports = {
       accessTokenKey,
       refreshTokenKey
     );
-    return res.status(200).json(tokens);
+    return new SuccessResponse("SignUp Successful", {
+      user: addedUser,
+      tokens,
+    }).send(res);
   },
   loginUser: async (req, res, next) => {
     const { email, password } = req.body;
@@ -45,17 +49,25 @@ module.exports = {
     const user = await userService.findUserByEmail(email);
 
     if (!user) {
-      return next(new NotFoundError());
+      return next(new NotFoundError("user"));
     }
 
     const match = await bcrypt.compare(password, user.password);
-    console.log(match);
+
     if (!match) return next(new IncorrectPasswordError());
 
     const { accessTokenKey, refreshTokenKey } = generateKeys();
+
+    const keyStore = await keyStoreService.findKeyByParams(user._id);
+    if (keyStore) return next(new AlreadyLoggedInError());
+
     await keyStoreService.createKey(user._id, accessTokenKey, refreshTokenKey);
     const tokens = await generateTokens(user, accessTokenKey, refreshTokenKey);
-    return res.status(200).json(tokens);
+    return new SuccessResponse("Logged in successfully", tokens).send(res);
+  },
+  logoutUser: async (req, res, next) => {
+    await keyStoreService.deleteKeyById(req.keystore._id);
+    return new SuccessResponse("Logged Out successfully").send(res);
   },
 
   refreshToken: async (req, res, next) => {
@@ -76,6 +88,6 @@ module.exports = {
     await keyStoreService.deleteKeyById(keyStore._id);
     const { accessTokenKey, refreshTokenKey } = generateKeys();
     const tokens = await generateTokens(user, accessTokenKey, refreshTokenKey);
-    return res.status(200).json(tokens);
+    return new SuccessResponse("New Tokens Created", tokens).send(res);
   },
 };

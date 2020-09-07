@@ -2,6 +2,10 @@ const JWT = require("jsonwebtoken");
 const path = require("path");
 const { promisify } = require("util");
 const { readFile } = require("fs");
+const {
+  TokenExpiredError,
+  InvalidTokenError,
+} = require("./../../errorHandling/apiError");
 
 const readPublicKey = () => {
   return promisify(readFile)(path.join(__dirname, "../keys/public.pem"));
@@ -20,8 +24,9 @@ module.exports = {
     const cert = await readPublicKey();
     try {
       return promisify(JWT.verify)(token, cert);
-    } catch {
-      (err) => console.log(err);
+    } catch (e) {
+      if (e && e.name === "TokenExpiredError") throw new TokenExpiredError();
+      throw new InvalidTokenError();
     }
   },
   decode: async (token) => {
@@ -29,7 +34,7 @@ module.exports = {
     try {
       return promisify(JWT.verify)(token, cert, { ignoreExpiration: true });
     } catch {
-      (err) => console.log(err);
+      throw new InvalidTokenError();
     }
   },
 };

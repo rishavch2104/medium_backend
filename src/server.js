@@ -4,7 +4,6 @@ const mongoInit = require("./database");
 dotenv.config({ path: "config.env" });
 mongoInit();
 const server = app.listen(process.env.PORT, () => {
-  console.log(process.env.accessTokenValidity);
   console.log(`Server listening on port ${process.env.PORT}`);
 });
 

@@ -8,6 +8,6 @@ module.exports = {
     return keyStore.find(params);
   },
   deleteKeyById: async (id) => {
-    await keyStore.delete(id);
+    await keyStore.findByIdAndDelete(id);
   },
 };
