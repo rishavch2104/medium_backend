@@ -5,7 +5,7 @@ module.exports = {
     return keyStore.create({ user: id, accessTokenKey, refreshTokenKey });
   },
   findKeyByParams: (params) => {
-    return keyStore.find(params);
+    return keyStore.findOne(params);
   },
   deleteKeyById: async (id) => {
     await keyStore.findByIdAndDelete(id);

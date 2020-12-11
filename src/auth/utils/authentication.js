@@ -16,13 +16,17 @@ router.use(
   validator(schema.auth, "headers"),
   asyncHandler(async (req, res, next) => {
     req.accessToken = getAccessToken(req.headers.authorization);
+    console.log(req.accessToken);
 
     try {
       const payload = await JWT.validate(req.accessToken);
       const user = await userService.findUserById(payload.sub);
       if (!user) throw new NotFoundError("user");
       req.user = user;
-      const keystore = await keystoreService.findKeyByParams(req.user._id);
+
+      const keystore = await keystoreService.findKeyByParams({
+        user: req.user._id,
+      });
       if (!keystore) throw new InvalidTokenError();
       req.keystore = keystore;
       return next();

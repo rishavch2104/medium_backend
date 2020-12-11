@@ -5,7 +5,6 @@ const validator = (schema, source = "body") => {
   return (req, res, next) => {
     try {
       const { error } = schema.validate(req[source]);
-      console.log(source);
       if (!error) return next();
 
       const { details } = error;
